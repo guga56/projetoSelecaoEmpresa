@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+   <f:metadata>
+      <f:event listener="#{mb.verificarLogin}" type="preRenderView"></f:event>
+   </f:metadata>
+</h:head>
+
+<h:body>
+   <p:panel header="Bem vindo ao Sistema">
+      <h:form id="form3">
+        <p:panelGrid columns="2">
+          <h:outputText value="logado #{mb.usuarioLogado}"/>
+          <p:commandButton value="Logout" action="#{mb.logout}" ajax="false"></p:commandButton>
+        </p:panelGrid>
+      </h:form>
+   </p:panel>
+   <p:separator></p:separator>
+   <p:panel header="Cadastrar Cliente">
+     <h:form id="form4">
+       <p:panelGrid columns="2">
+          
+          <h:outputText value="Nome"/>
+          <p:inputText size="40" value="#{mbcliente.cliente.nome}"/>
+          
+          <h:outputText value="Email"/>
+          <p:inputText size="40" value="#{mbcliente.cliente.email}"/>
+          
+          <h:outputText value="Endereço"/>
+          <p:inputText size="40" value="#{mbcliente.cliente.endereco}"/>
+          
+          <h:outputText value="Cidade"/>
+          <p:inputText size="40" value="#{mbcliente.cliente.cidade}"/>
+          
+          <h:outputText value="Nome"/>
+          <p:selectOneMenu value="#{mbcliente.cliente.estado}">
+             <f:selectItem itemLabel="Selecione Estado" itemValue=""/>
+             <f:selectItem itemLabel="RJ" itemValue="RJ"/>
+             <f:selectItem itemLabel="PR" itemValue="PR"/>
+             <f:selectItem itemLabel="BA" itemValue="BA"/>
+             <f:selectItem itemLabel="GO" itemValue="GO"/>
+             <f:selectItem itemLabel="SP" itemValue="SP"/>
+             <f:selectItem itemLabel="SE" itemValue="SE"/>
+          </p:selectOneMenu>
+          
+          <h:outputText value="Cep"/>
+          <p:inputMask mask="999999999" value="#{mbcliente.cliente.cep}"/>
+          
+          <h:outputText value="Data de Nascimento"/>
+          <p:calendar value="#{mbcliente.cliente.dataNascimento}" validator="DataNacValidator" pattern="dd/MM/yyyy">
+          </p:calendar>
+          
+          <h:outputText value="Login"/>
+          <p:inputText value="#{mbcliente.usuario.login}"/>
+          
+          <h:outputText value="Senha"/>
+          <p:password value="#{mbcliente.usuario.senha}"/>
+          
+          <p:commandButton value="Gravar Cliente" action="#{mbcliente.cadastrarCliente}" update=":form4, :form5" ajax="false"></p:commandButton>
+          
+       </p:panelGrid>
+     </h:form>
+     <p:messages></p:messages>
+     <p:growl></p:growl>
+   </p:panel>
+   <p:separator></p:separator>
+   <p:panel header="Consulta">
+    <h:form id="form5">
+     <p:dataTable value="#{mbcliente.listaCliente}" var="linha" paginator="true"
+                    rows="3"
+                    rowsPerPageTemplate="3,5"
+                    emptyMessage="Nehum Item do Cliente Cadastrado">
+       <p:column headerText="Nome">
+          <h:outputText value="#{linha.nome}"/>
+       </p:column>
+       <p:column headerText="Email">
+          <h:outputText value="#{linha.email}"/>
+       </p:column>
+       <p:column headerText="Endereco">
+          <h:outputText value="#{linha.endereco}"/>
+       </p:column>
+       <p:column headerText="Cidade">
+          <h:outputText value="#{linha.cidade}"/>
+       </p:column>
+       <p:column headerText="Estado">
+          <h:outputText value="#{linha.estado}"/>
+       </p:column>
+       <p:column headerText="Cep">
+          <h:outputText value="#{linha.cep}"/>
+       </p:column>
+        <p:column headerText="Excluir">
+           <p:commandButton value="Excluir" update=":form5" action="#{mbcliente.excluir}" process="@this" icon="ui-icon-trash" ajax="true">
+             <f:setPropertyActionListener value="#{linha}" target="#{mbcliente.cliente}"></f:setPropertyActionListener>
+             <p:confirm icon="ui-icon-alert" message="Deseja excluir?" header="Confirma?"></p:confirm>
+           </p:commandButton>
+        </p:column>
+         <p:column headerText="Alterar">
+             <p:commandButton value="Alterar" update=":form6" action="#{mbcliente.alterar1}" onclick="PF('janela1').show()"></p:commandButton>
+          </p:column>
+     </p:dataTable>
+    </h:form>
+   </p:panel>
+   <p:confirmDialog appendTo="@(body)" global="true">
+      <p:commandButton process="@this"    value="sim" 
+        styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ></p:commandButton> 
+       <p:commandButton process="@this"    value="Nao" 
+        styleClass="ui-confirmdialog-no" icon="ui-icon-close" ></p:commandButton>
+   </p:confirmDialog>
+    <p:dialog widgetVar="janela1" modal="true" header="Atualizar o Usuario">
+     <h:form id="form6">
+        <p:panelGrid columns="2">
+          
+          <h:outputText value="IdCliente"/>
+          <p:inputText value="#{mbcliente.clienteAltera.idCliente}" readonly="true"/>
+          
+          <h:outputText value="Nome"/>
+          <p:inputText size="40" value="#{mbcliente.clienteAltera.nome}"/>
+          
+          <h:outputText value="Email"/>
+          <p:inputText size="40" value="#{mbcliente.clienteAltera.email}"/>
+          
+          <h:outputText value="Endereço"/>
+          <p:inputText size="40" value="#{mbcliente.clienteAltera.endereco}"/>
+          
+          <h:outputText value="Cidade"/>
+          <p:inputText size="40" value="#{mbcliente.clienteAltera.cidade}"/>
+          
+          <h:outputText value="Nome"/>
+          <p:selectOneMenu value="#{mbcliente.clienteAltera.estado}">
+             <f:selectItem itemLabel="Selecione Estado" itemValue=""/>
+             <f:selectItem itemLabel="RJ" itemValue="RJ"/>
+             <f:selectItem itemLabel="PR" itemValue="PR"/>
+             <f:selectItem itemLabel="BA" itemValue="BA"/>
+             <f:selectItem itemLabel="GO" itemValue="GO"/>
+             <f:selectItem itemLabel="SP" itemValue="SP"/>
+             <f:selectItem itemLabel="SE" itemValue="SE"/>
+          </p:selectOneMenu>
+          
+          <h:outputText value="Cep"/>
+          <p:inputMask mask="999999999" value="#{mbcliente.clienteAltera.cep}"/>
+          
+          <h:outputText value="Data de Nascimento"/>
+          <p:calendar value="#{mbcliente.clienteAltera.dataNascimento}" validator="DataNacValidator" pattern="dd/MM/yyyy">
+          </p:calendar>
+          
+          <h:outputText value="Login"/>
+          <p:inputText value="#{mbcliente.clienteAltera.usuario.login}"/>
+          
+          <h:outputText value="Senha"/>
+          <p:password value="#{mbcliente.clienteAltera.usuario.senha}"/>
+          
+          <p:commandButton value="Gravar Cliente" action="#{mbcliente.alterar2}" update=":form6, :form5" ajax="false"></p:commandButton>
+           
+        </p:panelGrid>
+     </h:form>
+   </p:dialog>
+</h:body>
+
+</html>
